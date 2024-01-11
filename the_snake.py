@@ -260,7 +260,8 @@ def go(snake, rocks, apple, trash):
         snake.move()
 
         head_position = snake.get_head_position()
-        if head_position == apple.position:  # Проверка, не съела ли голова яблоко.
+        # Проверка, не съела ли голова яблоко.
+        if head_position == apple.position:
             apple.position = apple.randomize_position()
             while apple.position in trash.positions + rocks.positions:
                 apple.position = apple.randomize_position()
@@ -274,7 +275,9 @@ def go(snake, rocks, apple, trash):
                 # Если выполняется хоть одно, игра начинается заново.
                 head_position in snake.positions[3:]
         ) or (head_position in rocks.positions) or (
-                (head_position in trash.positions) and (len(snake.positions) == 1)
+                (head_position in trash.positions) and (
+                    len(snake.positions) == 1
+                )
         ):
             snake.reset()
             rect = pygame.Rect(
@@ -311,6 +314,7 @@ def go(snake, rocks, apple, trash):
 
 
 def main():
+    """Функция, выполняющаяся при запуске программы."""
     snake = Snake()
     rocks = Rock()
     apple = Apple()
