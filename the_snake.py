@@ -39,6 +39,7 @@ clock = pygame.time.Clock()
 
 class GameObject:
     """Базовый класс для всех игровых объектов."""
+
     def __init__(self):
         self.positions = [(320, 240)]
         self.position = (320, 240)
@@ -48,13 +49,13 @@ class GameObject:
     @abstractmethod
     def draw(self, surface):
         """Отрисовывает объекты на игровой поверхности."""
-
         for position in self.positions:
             screen.blit(self.image, (position[0], position[1]))
 
 
 class Apple(GameObject):
     """Класс, описывающий объект яблока."""
+
     def __init__(self):
         super().__init__()
         self.position = self.randomize_position()
@@ -66,7 +67,6 @@ class Apple(GameObject):
         Генерирует случайные координаты на сетке игрового
         поля для расположения на них объекта яблока.
         """
-
         position = (
             choice([i * 20 for i in range(1, SCREEN_WIDTH // 20)]),
             choice([i * 20 for i in range(1, SCREEN_HEIGHT // 20)])
@@ -75,12 +75,12 @@ class Apple(GameObject):
 
     def draw(self, surface):
         """Отрисовывает яблоко на игровой поверхности."""
-
         screen.blit(self.image, (self.position[0], self.position[1]))
 
 
 class Snake(GameObject):
     """Класс, описывающий объект Змейки."""
+
     def __init__(self):
         super().__init__()
         self.length = 1
@@ -88,15 +88,19 @@ class Snake(GameObject):
         self.direction = RIGHT
         self.next_direction = None
         self.last = None
-        self.body_image = pygame.image.load('./pictures/snake_body.png').convert_alpha()
-        self.head_image_right = pygame.image.load('./pictures/snake_head_r.png').convert_alpha()
-        self.head_image_down = pygame.image.load('./pictures/snake_head_d.png').convert_alpha()
-        self.head_image_left = pygame.image.load('./pictures/snake_head_l.png').convert_alpha()
-        self.head_image_up = pygame.image.load('./pictures/snake_head_u.png').convert_alpha()
+        self.body_image = pygame.image.load('./pictures/snake_body.png')
+        self.body_image.convert_alpha()
+        self.head_image_right = pygame.image.load('./pictures/snake_head_r.png')
+        self.head_image_right.convert_alpha()
+        self.head_image_down = pygame.image.load('./pictures/snake_head_d.png')
+        self.head_image_down.convert_alpha()
+        self.head_image_left = pygame.image.load('./pictures/snake_head_l.png')
+        self.head_image_left.convert_alpha()
+        self.head_image_up = pygame.image.load('./pictures/snake_head_u.png')
+        self.head_image_up.convert_alpha()
 
     def update_direction(self):
         """Устанавливает новое значение для направления движения."""
-
         if self.next_direction:
             self.direction = self.next_direction
             self.next_direction = None
@@ -109,7 +113,6 @@ class Snake(GameObject):
         их координаты по принципу: текущая секция принимает
         координаты предыдущей.
         """
-
         if len(self.positions) > 1:
             for i in range(-1, -1 * len(self.positions), -1):
                 self.positions[i] = self.positions[i - 1]
@@ -118,7 +121,6 @@ class Snake(GameObject):
 
     def draw(self, surface):
         """Отрисовывает змейку на экране, затирая след."""
-
         if self.last:
             last_rect = pygame.Rect(
                 (self.last[0], self.last[1]),
@@ -146,6 +148,7 @@ class Snake(GameObject):
                      self.positions[-1][1])
 
     def eat_trash(self, surface):
+        """Обработка съедания мусора змейкой."""
         last_rect = pygame.Rect(
             (self.positions[-1][0], self.positions[-1][1]),
             (GRID_SIZE, GRID_SIZE)
@@ -155,7 +158,6 @@ class Snake(GameObject):
 
     def get_head_position(self):
         """Возвращает координаты головы змейки."""
-
         return self.positions[0]
 
     def reset(self):
@@ -171,6 +173,7 @@ class Snake(GameObject):
 
 class Rock(GameObject):
     """Класс, описывающий камень."""
+
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('./pictures/rock.png').convert_alpha()
@@ -182,7 +185,6 @@ class Rock(GameObject):
         Генерирует случайные координаты на сетке игрового
         поля для расположения на них нескольких объектов камней.
         """
-
         positions = []
         for rock in range(randint(1, 7)):
             positions.append(
@@ -199,6 +201,7 @@ class Rock(GameObject):
 
 class Trash(GameObject):
     """Класс, описывающий мусор."""
+
     def __init__(self):
         super().__init__()
         self.positions = self.randomize_positions()
@@ -210,7 +213,6 @@ class Trash(GameObject):
         Генерирует случайные координаты на сетке игрового
         поля для расположения на них нескольких объектов мусора.
         """
-
         positions = []
         for rock in range(randint(1, 4)):
             positions.append(
@@ -228,7 +230,6 @@ class Trash(GameObject):
 # Функция обработки действий пользователя
 def handle_keys(game_object: Snake):
     """Функция-обработчик событий нажатий клавиш."""
-
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
