@@ -88,16 +88,16 @@ class Snake(GameObject):
         self.direction = RIGHT
         self.next_direction = None
         self.last = None
-        self.body_image = pygame.image.load('./pictures/snake_body.png')
-        self.body_image.convert_alpha()
-        self.head_image_right = pygame.image.load('./pictures/snake_head_r.png')
-        self.head_image_right.convert_alpha()
-        self.head_image_down = pygame.image.load('./pictures/snake_head_d.png')
-        self.head_image_down.convert_alpha()
-        self.head_image_left = pygame.image.load('./pictures/snake_head_l.png')
-        self.head_image_left.convert_alpha()
-        self.head_image_up = pygame.image.load('./pictures/snake_head_u.png')
-        self.head_image_up.convert_alpha()
+        self.body_image = pygame.image.load('./pictures/snake_body'
+                                            '.png').convert_alpha()
+        self.head_image_right = pygame.image.load('./pictures/snake_head_r'
+                                                  '.png').convert_alpha()
+        self.head_image_down = pygame.image.load('./pictures/snake_head_d'
+                                                 '.png').convert_alpha()
+        self.head_image_left = pygame.image.load('./pictures/snake_head_l'
+                                                 '.png').convert_alpha()
+        self.head_image_up = pygame.image.load('./pictures/snake_head_u'
+                                               '.png').convert_alpha()
 
     def update_direction(self):
         """Устанавливает новое значение для направления движения."""
@@ -137,13 +137,17 @@ class Snake(GameObject):
 
         # Отрисовка головы змейки
         if self.direction == RIGHT:
-            screen.blit(self.head_image_right, (self.positions[0][0], self.positions[0][1]))
+            screen.blit(self.head_image_right,
+                        (self.positions[0][0], self.positions[0][1]))
         elif self.direction == DOWN:
-            screen.blit(self.head_image_down, (self.positions[0][0], self.positions[0][1]))
+            screen.blit(self.head_image_down,
+                        (self.positions[0][0], self.positions[0][1]))
         elif self.direction == LEFT:
-            screen.blit(self.head_image_left, (self.positions[0][0], self.positions[0][1]))
+            screen.blit(self.head_image_left,
+                        (self.positions[0][0], self.positions[0][1]))
         elif self.direction == UP:
-            screen.blit(self.head_image_up, (self.positions[0][0], self.positions[0][1]))
+            screen.blit(self.head_image_up,
+                        (self.positions[0][0], self.positions[0][1]))
         self.last = (self.positions[-1][0],
                      self.positions[-1][1])
 
@@ -196,6 +200,7 @@ class Rock(GameObject):
         return positions
 
     def draw(self, surface):
+        """Орисовывает камни на игровой поверхности."""
         super().draw(surface)
 
 
@@ -224,6 +229,7 @@ class Trash(GameObject):
         return positions
 
     def draw(self, surface):
+        """Орисовывает мусор на игровой поверхности."""
         super().draw(surface)
 
 
@@ -245,27 +251,8 @@ def handle_keys(game_object: Snake):
                 game_object.next_direction = RIGHT
 
 
-def main():
-    snake = Snake()
-    rocks = Rock()
-    apple = Apple()
-    trash = Trash()
-    snake.draw(screen)
-
-    all_positions = [apple.position] + trash.positions + rocks.positions
-    while len(set(all_positions)) < len(all_positions):
-        # Проверка, не накладываются ли объекты друг на друга.
-        # Если где-то накладываются, то их координаты заново
-        # рандомизируются.
-        apple.randomize_position()
-        trash.randomize_positions()
-        rocks.randomize_positions()
-        all_positions = [apple.position] + trash.positions + rocks.positions
-
-    apple.draw(screen)
-    trash.draw(screen)
-    rocks.draw(screen)
-
+def go(snake, rocks, apple, trash):
+    """Основной процесс игры и обработка событий."""
     while True:
         clock.tick(SPEED)
         handle_keys(snake)
@@ -273,11 +260,12 @@ def main():
         snake.move()
 
         head_position = snake.get_head_position()
-        if head_position == apple.position:   # Проверка, не съела ли голова яблоко.
+        if head_position == apple.position:  # Проверка, не съела ли голова яблоко.
             apple.position = apple.randomize_position()
             while apple.position in trash.positions + rocks.positions:
                 apple.position = apple.randomize_position()
-            snake.positions.append((snake.positions[-1][0], snake.positions[-1][1]))
+            snake.positions.append((snake.positions[-1][0],
+                                    snake.positions[-1][1]))
 
         elif (  # Проверка:
                 # Врезалась ли змейка саму в себя
@@ -320,6 +308,29 @@ def main():
         rocks.draw(screen)
         trash.draw(screen)
         pygame.display.update()
+
+
+def main():
+    snake = Snake()
+    rocks = Rock()
+    apple = Apple()
+    trash = Trash()
+    snake.draw(screen)
+
+    all_positions = [apple.position] + trash.positions + rocks.positions
+    while len(set(all_positions)) < len(all_positions):
+        # Проверка, не накладываются ли объекты друг на друга.
+        # Если где-то накладываются, то их координаты заново
+        # рандомизируются.
+        apple.randomize_position()
+        trash.randomize_positions()
+        rocks.randomize_positions()
+        all_positions = [apple.position] + trash.positions + rocks.positions
+
+    apple.draw(screen)
+    trash.draw(screen)
+    rocks.draw(screen)
+    go(snake, rocks, apple, trash)
 
 
 if __name__ == '__main__':
