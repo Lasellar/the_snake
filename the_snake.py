@@ -66,7 +66,8 @@ class GameObject:
     @staticmethod
     def _random_positions_generator(from_, to_):
         """Генерирует случайное расположение для объектов
-        в случайном количестве из диапазона (от:до]."""
+        в случайном количестве из диапазона (от:до].
+        """
         result = []
         for i in range(from_, to_ + 1):
             res_1 = choice(
@@ -255,21 +256,16 @@ def handle_keys(game_object: Snake):
         if event.type == pygame.QUIT:
             pygame.quit()
             raise SystemExit
-
         elif event.type == pygame.KEYDOWN:
-
             if (event.key == pygame.K_UP and
                     game_object.direction != DOWN):
                 game_object.next_direction = UP
-
             elif (event.key == pygame.K_DOWN and
                   game_object.direction != UP):
                 game_object.next_direction = DOWN
-
             elif (event.key == pygame.K_LEFT and
                   game_object.direction != RIGHT):
                 game_object.next_direction = LEFT
-
             elif (event.key == pygame.K_RIGHT and
                   game_object.direction != LEFT):
                 game_object.next_direction = RIGHT
@@ -299,12 +295,10 @@ def go(snake, rocks, apple, trash):
                 # Съела ли змейка мусор при длине в 1 клетку
                 # Если выполняется хоть одно, игра начинается заново.
                 head_position
-                in snake.positions[3:]
-            )
+                in snake.positions[3:])
             or (head_position in rocks.positions)
-            or ((head_position in trash.positions) and
-                (len(snake.positions) == 1))
-        ):
+            or ((head_position in trash.positions)
+                and (len(snake.positions) == 1))):
             snake.reset()
             rect = pygame.Rect((0, 0), (SCREEN_WIDTH, SCREEN_HEIGHT))
             pygame.draw.rect(screen, BOARD_BACKGROUND_COLOR, rect)
