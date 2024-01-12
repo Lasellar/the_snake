@@ -11,30 +11,30 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 sys.path.append(str(BASE_DIR))
 
 # Hide the pygame screen
-os.environ['SDL_VIDEODRIVER'] = 'dummy'
+os.environ["SDL_VIDEODRIVER"] = "dummy"
 
 try:
     import the_snake
 except ImportError as error:
     raise AssertionError(
-        'При импорте модуль `the_snake` произошла ошибка:\n'
-        f'{type(error).__name__}: {error}'
+        "При импорте модуль `the_snake` произошла ошибка:\n"
+        f"{type(error).__name__}: {error}"
     )
 
-for class_name in ('GameObject', 'Snake', 'Apple'):
-    assert hasattr(the_snake, class_name), (
-        f'Убедитесь, что в модуле `the_snake` определен класс `{class_name}`.'
-    )
+for class_name in ("GameObject", "Snake", "Apple"):
+    assert hasattr(
+        the_snake, class_name
+    ), f"Убедитесь, что в модуле `the_snake` определен класс `{class_name}`."
 
 
 TIMEOUT_ASSERT_MSG = (
-    'Проект работает некорректно, проверка прервана.\n'
-    'Вероятные причины ошибки:\n'
-    '1. Исполняемый код (например, вызов функции `main()`) оказался в '
-    'глобальной зоне видимости. Как исправить: вызов функции `main` поместите '
+    "Проект работает некорректно, проверка прервана.\n"
+    "Вероятные причины ошибки:\n"
+    "1. Исполняемый код (например, вызов функции `main()`) оказался в "
+    "глобальной зоне видимости. Как исправить: вызов функции `main` поместите "
     'внутрь конструкции `if __name__ == "__main__":`.\n'
-    '2. В цикле `while True` внутри функции `main` отсутствует вызов метода '
-    '`tick` объекта `clock`. Не изменяйте прекод в этой части.'
+    "2. В цикле `while True` внутри функции `main` отсутствует вызов метода "
+    "`tick` объекта `clock`. Не изменяйте прекод в этой части."
 )
 
 
@@ -59,28 +59,28 @@ def _create_game_object(class_name):
         return getattr(the_snake, class_name)()
     except TypeError as error:
         raise AssertionError(
-            f'При создании объекта класса `{class_name}` произошла ошибка:\n'
-            f'`{type(error).__name__}: {error}`\n'
-            f'Если в конструктор класса `{class_name}` помимо параметра '
-            '`self` передаются какие-то ещё параметры - убедитесь, что для '
-            'них установлены значения по умолчанию. Например:\n'
-            '`def __init__(self, <параметр>=<значение_по_умолчанию>):`'
+            f"При создании объекта класса `{class_name}` произошла ошибка:\n"
+            f"`{type(error).__name__}: {error}`\n"
+            f"Если в конструктор класса `{class_name}` помимо параметра "
+            "`self` передаются какие-то ещё параметры - убедитесь, что для "
+            "них установлены значения по умолчанию. Например:\n"
+            "`def __init__(self, <параметр>=<значение_по_умолчанию>):`"
         )
 
 
 @pytest.fixture
 def game_object():
-    return _create_game_object('GameObject')
+    return _create_game_object("GameObject")
 
 
 @pytest.fixture
 def snake():
-    return _create_game_object('Snake')
+    return _create_game_object("Snake")
 
 
 @pytest.fixture
 def apple():
-    return _create_game_object('Apple')
+    return _create_game_object("Apple")
 
 
 class StopInfiniteLoop(Exception):
@@ -97,6 +97,7 @@ def loop_breaker_decorator(func):
         if call_counter > 1:
             raise StopInfiniteLoop
         return result
+
     return wrapper
 
 
@@ -111,7 +112,7 @@ def modified_clock():
             return self.clock.tick(*args, **kwargs)
 
         def __getattribute__(self, name: str) -> Any:
-            if name in ['tick', 'clock']:
+            if name in ["tick", "clock"]:
                 return super().__getattribute__(name)
             return self.clock.__getattribute__(name)
 
